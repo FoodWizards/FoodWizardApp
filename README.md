@@ -80,6 +80,6 @@ These resources provide comprehensive documentation, tutorials, and references f
 
 Team:
   - Hariharan Sundaram
-   - Asawari Kadam
-    - Rutuja Kute
+  - Asawari Kadam
+  - Rutuja Kute
 
