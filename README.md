@@ -64,7 +64,7 @@ Resources and Team:
 3. Data Sources:
    - YouTube: A video-sharing platform where users can find cooking tutorial videos.
    - Food.com: A comprehensive database of recipes and cooking-related content.
-     https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions     
+     https://www.kaggle.com/datasets/kanishk307/6000-indian-food-recipes-dataset     
 
 4. Documentation and References:
    - FastAPI Documentation: [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
