@@ -39,7 +39,9 @@ Those interested in leveraging technology to simplify their culinary journey and
 
 CodeLab: https://codelabs-preview.appspot.com/?file_id=1T4FIak6iigOSCrGLP44bsKpyt_S_kZ1uKInPsoNiBUM#0
 
-Architecture Diagram:<img width="980" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/19dc0dc8-1f1b-411a-8624-0d05287f4d5c">
+Architecture Diagram:
+<img width="752" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/57e6d2bf-8ec4-46f9-9bb0-0e02a948c2e3">
+
 
 
 Resources and Team:
