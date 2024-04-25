@@ -9,5 +9,16 @@ PyPDF2
 boto3
 streamlit
 pytube
-git+https://github.com/dpkp/kafka-python.git
 ffmpeg-python
+scrapy
+ipython
+selenium
+webscraping
+scrapy-selenium
+validators
+pydantic 
+pandas
+snowflake-sqlalchemy
+SQLAlchemy
+fastapi
+uvicorn
