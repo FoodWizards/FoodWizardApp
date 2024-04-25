@@ -1,0 +1,16 @@
+scrapy
+ipython
+selenium
+webscraping
+scrapy-selenium
+validators
+pydantic 
+numpy
+pandas
+python-dotenv
+snowflake-sqlalchemy
+SQLAlchemy
+pinecone-client
+langchain
+openai
+streamlit
