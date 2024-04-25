@@ -22,3 +22,6 @@ snowflake-sqlalchemy
 SQLAlchemy
 fastapi
 uvicorn
+streamlit-google-auth
+bs4
+requests
