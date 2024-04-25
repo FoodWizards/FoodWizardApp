@@ -1,0 +1,27 @@
+{
+    "name": "FoodWizard",
+    "description": "",
+    "version": "0.1.0",
+    "manifest_version": 3,
+    "key": "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCNzZkMMIsAEQdklqsT0F/06aoHBD88wUOkvyKe+NigvE+fSsg0sDs4pEwQ6780O/jhkN6E1xkY8CQHsDIRuqAdDD5gMmeSkKMYBF3ZSqVJI/H1De3oy8SlDo1LioiwNmOqP8R93fllLL5n2MQbGo4tmsBVPvDdeyP4nf9aTFXgW/6reCdJM76thDVQczbBq+2dfhDGhMfCmfHevSx4B12AabTrYuRecjAJNPPqZKaL9Z6cSoLU1H/glW8uZL4txCA53niR8Cdh1KYLv86cebxydJrexxo0fsFOyS8pJZsCWoRNV8uAFJGCt0CUZv3K6O56V4UtklAxJ4Jt8f4D2PTdAgMBAAECggEANJ1txU0ZtkubP6J8Fd0CTcCJmxLjV+qp664T7YKN9o4IySUZRhuBzdGAe+LNTldWUHPNbOLW6B7qb4PcACIMGNsbJdxt+775FQdBv0doLsxMkc26Ud+RtmDA4p+jeiakMl54zO8ZA4Znm+adVSU0Tg2WgcrZ2oQ/Y5dUUS/zyUwron03uMNGat0peOEiTG5rwQNyuf8pKrfAyXf1BWWTAIM8D1edCqpP2Vly7yD38XmMo5BfmN8/QoLtv0Tm241+ztZCYV9PP8VME43JRoPp72qPbQD45ELk8mymU9GFMkQDNKv6HjRHyPLz7q4ggVHL6bVsoQj4z6nNsjYBHQ5/7QKBgQDGANP16wRwLJzxv1JGio2pCTvknduosMxiINt6C4KgqyDyfQTKjEy6q5ModC5CJHDfHZwHZsKOH9RNclB+9vFQbmrvnwBW4qFcrz74M0/dh+kocrpoN8nBiZIQzlMexO+yWyeLGJTlMIOkZ0JQIKHuU9710XK5krBVxAgTgGUA2wKBgQC3VqHwDgcOxJRNg9uEct2KyzMxxqDwj1Bks9dKYDHm9AW5Yb+X0q30P4UX8FV1XBSTOZwZZ55JXcWVDVW85gfmDqCXQodfvBjKSLksL8aJuSeKo+JFI8GWgw2x7Qq2kK2PajOMhw5qy3jR4a5DBreXSjgbPEViVQoaxvO5cZISpwKBgHioCIHStOGmTf0CmSBjTe+zsMufZjtlgSZK33N/kBpYLbuWc1T6KceWxhXgtk+X5TAQ2wOnmucAfl6zSloUIPjiUEe0nIBVmf7gy35zxjc4mtwLDYx0cn19V4TmNcCKQYZuBaq9T/5Zkd6dDcvGFuckNLmW6FItEUcyLbm0g9gBAoGBAIcjSVw7ysH87l+wqLcZP+mVXBf9lBWdXaHM2g1NmJrnFe0Oev364hQeWglKMoO+KsBWf5ROR2NGxmPWn3MMj5fpAkBcXpKXgCJitnM2h/5uRxIvOJLEB2bdFNQoqHPncrc6jeKwjlTzxAvYcO2g3uSaZX7Vz0Lq8fbI3U+8wfITAoGAUooOoG5Xh7ZYhCXx6rVB1JPVv01RgoASKvEd3UW6Rg0jHYRtHm3qxaYGrHw7eRTxqoXe5AaeRGawRs3yIvZwMz4iz4OPPmxIO5+EmxvctQ0jPSvOEOEzg8Tpa1yrEORJneHA/tfrs4Sn/4GvmYwDBSmhlr9B0j9FYTCze/5A7Kk=",
+    "icons": {
+        "16": "./obj-16x16.png",
+        "32": "./obj-32x32.png",
+        "48": "./obj-48x48.png",
+        "128": "./obj-128x128.png"
+    },
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+      },
+    "options_page": "./options.html",
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "storage",
+        "identity",
+        "identity.email",
+        "notifications"
+      ]
+}
