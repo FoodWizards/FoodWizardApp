@@ -22,3 +22,4 @@ snowflake-sqlalchemy
 SQLAlchemy
 fastapi
 uvicorn
+kafka_python-2.0.3.dev0-py2.py3-none-any.whl

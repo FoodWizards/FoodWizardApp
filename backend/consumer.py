@@ -8,6 +8,7 @@ import ffmpeg
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from pytube import YouTube
+import json
 
 load_dotenv(verbose=True, override=True)
 
@@ -84,10 +85,10 @@ def convertToRecipeFormat(context):
             text = text + chunk.choices[0].delta.content
     return text
 
-def uploadToSnowflake(title, recipe, link, system_message):
+def uploadToSnowflake(title, recipe, link, system_message, email):
     print("Starting snowflake upload")
-    values_str = "('{title}', '{generated_recipe}', '{link_video}', '{system_message}')".format(
-            title=(title if title else 'NULL'), generated_recipe=(recipe if recipe else 'NULL'), link_video=link, system_message=(system_message if system_message else 'NULL')
+    values_str = "('{title}', '{generated_recipe}', '{link_video}', '{system_message}', '{user_email}')".format(
+            title=(title if title else 'NULL'), generated_recipe=(recipe if recipe else 'NULL'), link_video=link, system_message=(system_message if system_message else 'NULL'), user_email=email
         )
     try:
         connection = engine.connect()
@@ -116,16 +117,16 @@ def deleteLocalAudioFiles():
     files_to_delete = []
     print('Delete local audio files successful')
 
-def handleURL(link):
+def handleURL(link, email):
     video_title = downloadAudioToSystem(link=link)
     if(audioFileSize() >= 25):
         # Add a message into snowflake with link
         print('File too large')
-        uploadToSnowflake(link=link, system_message='The video is too long. System can support only videos under 23mins')
+        uploadToSnowflake(link=link, system_message='The video is too long. System can support only videos under 23mins', email=email)
         return
     transcribed_text = convertToTranscript()
     recipe_generated = convertToRecipeFormat(context=transcribed_text)
-    uploadToSnowflake(title=video_title, recipe=recipe_generated, link=link, system_message='Successful run')
+    uploadToSnowflake(title=video_title, recipe=recipe_generated, link=link, system_message='Successful run', email=email)
     deleteLocalAudioFiles()
 
 def snowflakeDDLQueries():
@@ -146,6 +147,7 @@ def snowflakeDDLQueries():
         generated_recipe String,
         link_video STRING,
         system_message STRING,
+        user_email STRING,
         PRIMARY KEY (link_video)
     )
     """
@@ -164,27 +166,46 @@ def snowflakeDDLQueries():
         connection.close()
         engine.dispose()
 
+def forgiving_json_deserializer(blob):
+    if blob is None:
+        return None
+    try:
+        print(blob.decode('utf-8'))
+        print('Done decoding')
+        return json.loads(blob.decode('utf-8'))
+    except json.decoder.JSONDecodeError:
+        print('Unable to decode: %s', blob)
+        return None
+    except Exception as e:
+        print('Unable to decode: %s', blob)
+        print(e)
+        return None
+
 
 def startConsumer():
         snowflakeDDLQueries()
         consumer = KafkaConsumer(
             'url_queue',
-            bootstrap_servers=['localhost:9092'],
+            bootstrap_servers=['host.docker.internal:9092'],
             auto_offset_reset='earliest',
             enable_auto_commit=True,
-            group_id='food-wizard-group'
+            group_id='food-wizard-group',
+            value_deserializer=forgiving_json_deserializer
         )
 
         for message in consumer:
+            if message is None:
+                continue
             try:
-                link = message.value.decode("utf-8")
+                link = message.value.get('url')
+                email = message.value.get('email')
+                if email is None or link is None:
+                    continue
                 print(link)
-                handleURL(link=link)
+                handleURL(link=link, email=email)
             except Exception as e:
                 print(f"URL Message Consumer: {e}")
                 time.sleep(2)
-                # Add a message into snowflake with link
-                uploadToSnowflake(link=link, system_message='Failed due to unknown reason. Please try again later!')
                 deleteLocalAudioFiles()
 
 def main():

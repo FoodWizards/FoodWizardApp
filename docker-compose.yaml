@@ -309,27 +309,27 @@ services:
   #   extra_hosts:
   #     - "host.docker.internal:host-gateway"
     
-  # backend:  
-  #   build:
-  #     context: .
-  #     dockerfile: ./dockerfiles/backend.Dockerfile
-  #   ports:
-  #     - "8080:80"
-  #   environment:
-  #     <<: *airflow-common-env
-  #     # Required to handle warm shutdown of the celery workers properly
-  #     # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
-  #     S3_BUCKET_NAME: ${S3_BUCKET_NAME}
-  #     AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-  #     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-  #     SNOWFLAKE_USERNAME: ${SNOWFLAKE_USERNAME}
-  #     SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
-  #     SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
-  #     SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
-  #     SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
-  #     SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
+  backend:  
+    build:
+      context: .
+      dockerfile: ./dockerfiles/backend.Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      <<: *airflow-common-env
+      # Required to handle warm shutdown of the celery workers properly
+      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
+      SNOWFLAKE_USER: ${SNOWFLAKE_USER}
+      SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
+      SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
+      SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
+      SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
+      PINECONE_API_KEY: ${PINECONE_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - kafka
 
   chrome:
       image: selenium/standalone-chrome:latest
