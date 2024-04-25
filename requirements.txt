@@ -1,0 +1,13 @@
+openai
+python-dotenv
+pinecone-client
+numpy
+snowflake-connector-python
+langchain
+tiktoken
+PyPDF2
+boto3
+streamlit
+pytube
+git+https://github.com/dpkp/kafka-python.git
+ffmpeg-python
