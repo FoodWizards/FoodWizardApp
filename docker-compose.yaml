@@ -306,6 +306,9 @@ services:
       SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
       SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
       BASE_URL: ${BASE_URL}
+      PINECONE_API_KEY: ${PINECONE_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -328,6 +331,7 @@ services:
       SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
       PINECONE_API_KEY: ${PINECONE_API_KEY}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
