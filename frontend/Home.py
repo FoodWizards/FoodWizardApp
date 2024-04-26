@@ -8,14 +8,12 @@ from naviagation.favorite_recipe import fav_recipe
 from naviagation.find_recipe import find_recipe
 from naviagation.search_recipe import search_recipe
 
-from naviagation.welcome import show_welcome_page
+from naviagation.welcome import process_url
 from database import connect_to_snowflake, insert_user_info
 
 st.title('FoodWizard')
 
 def main():
-
-
     ctx = connect_to_snowflake()
     authenticate()
     create_user_info_table(ctx)
@@ -29,7 +27,7 @@ def main():
         render_user_info(ctx)
         pages = {
             "My info": show_info,
-            "Home": show_welcome_page,
+            "Home": process_url,
             "Favorite Recipe": fav_recipe,
             "Find Recipe" : find_recipe,
             "Search Recipe" : search_recipe
