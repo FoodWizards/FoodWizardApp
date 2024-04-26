@@ -290,46 +290,49 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-  # frontend:  
-  #   build:
-  #     context: .
-  #     dockerfile: ./dockerfiles/frontend.Dockerfile
-  #   ports:
-  #     - "8501:8501"
-  #   environment:
-  #     <<: *airflow-common-env
-  #     # Required to handle warm shutdown of the celery workers properly
-  #     # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
-  #     S3_BUCKET_NAME: ${S3_BUCKET_NAME}
-  #     AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-  #     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-  #     SNOWFLAKE_USERNAME: ${SNOWFLAKE_USERNAME}
-  #     SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
-  #     SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
+  frontend:  
+    build:
+      context: .
+      dockerfile: ./dockerfiles/frontend.Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      <<: *airflow-common-env
+      # Required to handle warm shutdown of the celery workers properly
+      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
+      SNOWFLAKE_USER: ${SNOWFLAKE_USER}
+      SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
+      SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
+      SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
+      SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
+      BASE_URL: ${BASE_URL}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - backend
     
-  # backend:  
-  #   build:
-  #     context: .
-  #     dockerfile: ./dockerfiles/backend.Dockerfile
-  #   ports:
-  #     - "8080:80"
-  #   environment:
-  #     <<: *airflow-common-env
-  #     # Required to handle warm shutdown of the celery workers properly
-  #     # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
-  #     S3_BUCKET_NAME: ${S3_BUCKET_NAME}
-  #     AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-  #     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-  #     SNOWFLAKE_USERNAME: ${SNOWFLAKE_USERNAME}
-  #     SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
-  #     SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
-  #     SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
-  #     SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
-  #     SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
+  backend:  
+    build:
+      context: .
+      dockerfile: ./dockerfiles/backend.Dockerfile
+    ports:
+      - "8080:8000"
+    environment:
+      <<: *airflow-common-env
+      # Required to handle warm shutdown of the celery workers properly
+      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
+      SNOWFLAKE_USER: ${SNOWFLAKE_USER}
+      SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
+      SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
+      SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
+      SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
+      PINECONE_API_KEY: ${PINECONE_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      kafka:
+        condition: service_healthy
 
   chrome:
       image: selenium/standalone-chrome:latest
@@ -353,6 +356,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+  
   kafka:
     image: confluentinc/cp-kafka:6.2.0
     hostname: broker
@@ -374,6 +378,13 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_JMX_PORT: 9101
       KAFKA_JMX_HOSTNAME: localhost
+    healthcheck:
+      test: nc -z localhost 9092 || exit -1
+      start_period: 60s
+      interval: 5s
+      timeout: 10s
+      retries: 12
+
   kafka-ui:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
@@ -385,6 +396,15 @@ services:
       - kafka
     ports:
       - '8085:8080'
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_container
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    network_mode: host
 
 volumes:
   postgres-db-volume:
