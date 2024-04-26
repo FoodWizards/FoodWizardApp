@@ -25,7 +25,7 @@ FoodWizard is a platform designed to simplify recipe discovery and recommendatio
 
 
 
-Stakeholders:
+### Stakeholders:
 The end users for FoodWizard include:
 Cooking enthusiasts seeking recipe inspiration and guidance.
 Individuals with dietary restrictions or specific flavor preferences looking for tailored recipe recommendations.
@@ -34,69 +34,114 @@ Those interested in leveraging technology to simplify their culinary journey and
 ### CodeLab: https://codelabs-preview.appspot.com/?file_id=1T4FIak6iigOSCrGLP44bsKpyt_S_kZ1uKInPsoNiBUM#0
 
 ### Architecture Diagram:
-<img width="908" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/6dfb6c52-9854-4d84-9e39-8517705e1918">
+
 
 
 ### Methodology: 
 
 
-Data Acquisition:
-Fetch cooking tutorial links from YouTube or Blog, sent by user through chrome extension
-Scrape recipe data from sources - Archana's kitchen & Ranveer Brar
-
-Chrome Extension:
-Develop a Chrome extension to allow users to send cooking tutorial videos from YouTube or specific blogs to be documented, attached to his account
 
 
 <img width="609" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/e7bb1bfd-63c5-4514-b2c4-6c9538990d4c">
 
-Data Processing and Summarization:
-Process and summarize recipe data using OpenAI's natural language processing capabilities
+**User authenticates with Google Sign-in:** The user clicks on the Google Sign-in button on the Chrome extension. This redirects the user to a Google authorization page where they can sign in with their Google account.
+
+**User enters Youtube URL:** Once the user has successfully signed in with Google, they can then enter a Youtube URL into the Chrome extension.
+
+**Chrome extension captures Youtube URL:** The Chrome extension captures the Youtube URL that the user has entered.
+
+**Chrome extension sends Youtube URL to backend server:** The Chrome extension sends the captured Youtube URL to the backend server built with FastAPI.
+
+**FastAPI server saves Youtube URL to Snowflake database:** The FastAPI server receives the Youtube URL from the Chrome extension. The FastAPI server then connects to the Snowflake database and saves the Youtube URL for the specific user who is currently signed in.
+
+
+
+
 
 <img width="1245" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/c52eee50-ac02-47d9-a253-9b857a03b0a3">
 
-Recommendation Generation:
-Generate personalized recipe recommendations based on user preferences and dietary restrictions
-Store recipes from DB as embeddings in Pinecone for efficient retrieval
+**User can Reviews Saved URLs in App:**
+
+**Accessing Saved URLs:** Users can access the app to view a list of their saved YouTube URLs.
+
+**Retrieving Saved URLs:** This list retrieves the URLs previously stored for the user in Snowflake.
+
+**URL Sent to Processing Pipeline (Optional):**
+Selection Process: Within the app (optional), users can select a YouTube URL from their list.
+Sending to Pipeline: Upon selection (optional), the chosen URL is sent to a message queue like Kafka.
+
+**Processing Pipeline :**
+Receiving and Processing: A worker subscribed to the Kafka message queue receives the YouTube URL.
+Downloading and Conversion: This worker downloads the video from YouTube and converts it to text using OpenAI Whisper, supporting languages like Hindi, Marathi, Tamil, and English.
+
+Summarization with GPT-3.5: The converted text is sent to OpenAI GPT-3.5 for summarization in a proper format.
+Storage or Return: The generated summary can be stored or returned to the user through an API.
+
+
 
 <img width="884" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/c5873c80-6106-4881-aaf6-119de95fbbf1">
 
 
-User Interaction:
-Develop a Streamlit interface for users to specify preferences, fetch all recipes documented for the user, and explore summarized recipes and recommendations
-Implement filters and search functionality to search for videos and display top-matched recipes from Pinecone
+**Data Collection:**
+Source Websites: Recipes were scraped from Archana's Kitchen and Ranveer Brar websites.
+Scraping Process:Over 9000 recipes were extracted using Scrapy from these sources.
 
-Web Scraping:
-Create a web scraper to crawl and extract recipe data from AllRecipes.com and BBC Food websites periodically
-Update the Snowflake database with the latest scraped recipe data
+**Data Cleaning and Validation:**
+cleaning Procedures: The collected data underwent thorough cleaning and validation using pydantic to ensure accuracy and consistency.
 
-Scheduling and Automation:
-Implement a scheduler to periodically scrape recipe data from websites
-Utilize Apache Airflow to automate data processing tasks, including video processing, summarization, embedding generation, and web scraping
+**Storage:** Cleaned and validated data was stored in Snowflake.
 
-Deployment:
-Containerize the application using Docker for consistency and portability
-Deploy the containerized application on Amazon Web Services (AWS) for scalability and reliability
+**Embedding Creation:**
+Utilizing OpenAI Embeddings:Embeddings for the recipes were generated using OpenAI embeddings technology.
+Storage in Pinecone: These embeddings were stored in the Pinecone database for efficient retrieval and processing.
 
-Testing:
-Implement both Unit testing to validate the functionality and integration of different components within the application.
-Implement Continuous Integration (CI) pipeline using Git Actions to automate testing and build upon code changes.
+**Pipeline Automation with Airflow:**
+Airflow Implementation: The entire pipeline, from data collection to embedding creation, was automated using Apache Airflow.
+
+<img width="908" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/6dfb6c52-9854-4d84-9e39-8517705e1918">
+
+**Deployment:**
+Containerization with Docker:  The application is containerized using Docker to ensure consistency and portability across different environments.
+Deployment on Google Cloud Platform (GCP): The containerized application is deployed on GCP for scalability and reliability, leveraging the platform's robust infrastructure and services.
+
+**Testing:**
+Unit Testing and Integration Testing:Unit testing is implemented to validate the functionality of individual components within the application. Integration testing is conducted to ensure seamless interaction between different components.
+Project Journey Documentation on Codelabs: The project's journey is meticulously documented on Codelabs, providing insights into its architecture, utilised services, challenges encountered, and solutions implemented.
+
+**Video Demo:**
+Concise and Informative Demonstration:A concise, informative 10-minute video is created to demonstrate the key features and functionalities of the application.
+
 
 
 Resources and Team:
 
-1. Tools and Technologies:
-   - Python (v3.9.7): A versatile programming language used for developing various components of the application.
-   - FastAPI (v0.68.1): A modern, fast (high-performance), web framework for building APIs with Python 3.7+.
-   - OpenAI: A leading artificial intelligence research laboratory, providing tools and APIs for natural language processing tasks.
-   - Snowflake: A cloud-based data warehousing platform designed to handle large-scale data analytics.
-   - Docker (v20.10.9): A platform for developing, shipping, and running applications in containers.
-   - AWS (Amazon Web Services): A comprehensive cloud computing platform offering various services for computing, storage, database, and more.
-   - Streamlit (v1.1.0): An open-source Python library that makes it easy to create interactive web apps for data analysis and machine learning models.
-   - Apache Airflow (v2.1.4): A platform to programmatically author, schedule, and monitor workflows.
-   - Pydantic (v1.8.3): A data validation library in Python for defining data schemas and ensuring data integrity.
-  - Pinecone: A scalable vector database designed for real-time similarity search and recommendation systems, offering high-performance retrieval of embeddings for efficient similarity computations.
-[https://www.pinecone.io/](https://www.pinecone.io/)
+**Technology Stack:**
+
+API Development: FastAPI (for building the backend API)
+
+Natural Language Processing (NLP): OpenAI
+
+Whisper (for multilingual speech recognition of YouTube videos)
+
+GPT-3.5 Turbo (for large language model tasks like recipe summarization and embedding generation)
+
+Embeddings API (for storing recipe data in an efficient format)
+
+Data Storage:
+
+Snowflake (for storing structured recipe data)
+
+Pinecone (for storing recipe embeddings for efficient retrieval)
+
+User Interface: Streamlit (for creating a user-friendly web interface)
+
+Pipeline Orchestration: Apache Airflow (for automating data processing tasks)
+
+Web Scraping: Python libraries (Requests, Scrapy, BeautifulSoup)
+
+Deployment: Docker (for containerization)
+Cloud Platform: Google Cloud Platform (GCP) (for deployment and scaling)
+
 
 
 2. External Libraries and Dependencies:
@@ -104,8 +149,10 @@ Resources and Team:
 
 3. Data Sources:
    - YouTube: A video-sharing platform where users can find cooking tutorial videos.
-   - Food.com: A comprehensive database of recipes and cooking-related content.
-     https://www.kaggle.com/datasets/kanishk307/6000-indian-food-recipes-dataset     
+   - Archana's kitchen and Ranveer Brar: A comprehensive database of recipes and cooking-related content.
+     https://www.archanaskitchen.com/  
+     https://ranveerbrar.com/
+          
 
 4. Documentation and References:
    - FastAPI Documentation: [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
