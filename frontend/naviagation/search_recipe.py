@@ -1,9 +1,13 @@
 import streamlit as st
 import pandas as pd
 import requests
+import os
+
+BASE_URL = os.getenv('BASE_URL')
+
 # "http://host.docker.internal:8080/snowflake_query"
-API_URL = "http://localhost:8000/snowflake_query"
-Data_URL = "http://localhost:8000/get_recommeded_recipies"
+API_URL = f"http://{BASE_URL}/snowflake_query"
+Data_URL = f"http://{BASE_URL}/get_recommeded_recipies"
 
 
 # Sample recipe data (replace this with your actual data)
@@ -33,7 +37,7 @@ def filter_recipes(data, filters):
                 filtered_data = filtered_data[filtered_data[key] == value]
     return filtered_data
 
-def main():
+def search_recipe():
     st.title("Recipe List")
     default_value = " "
     # Filter options
@@ -71,6 +75,5 @@ def main():
     else: 
         st.write(recipe_data, style={"overflowY": "scroll", "height": "600px"})
 
-if __name__ == "__main__":
-    main()
+
 
