@@ -21,7 +21,6 @@ def _fetchAnswerFromGPT(contextStr):
     return response.choices[0].message.content
 
 
-
 def find_recipe():
     st.title("Find Your Recipe")
     if 'input_text' not in st.session_state:

@@ -14,6 +14,8 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 RUN python -m pip install kafka_python-2.0.3.dev0-py2.py3-none-any.whl
 
+RUN apt-get update -qq && apt-get install ffmpeg -y
+
 EXPOSE 8000
 
 COPY ./backend /code/app
