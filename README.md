@@ -113,34 +113,97 @@ Concise and Informative Demonstration:A concise, informative 10-minute video is 
 
 
 
-Resources and Team:
+### Resources and Team:
 
 **Technology Stack:**
+- API Development: FastAPI (for building the backend API)
+- Natural Language Processing (NLP): OpenAI
+- Whisper (for multilingual speech recognition of YouTube videos)
+- GPT-3.5 Turbo (for large language model tasks like recipe summarization and embedding generation)
+- Embeddings API (for storing recipe data in an efficient format)
+- Data Storage:
+- Snowflake (for storing structured recipe data)
+- Pinecone (for storing recipe embeddings for efficient retrieval)
+- User Interface: Streamlit (for creating a user-friendly web interface)
+- Pipeline Orchestration: Apache Airflow (for automating data processing tasks)
+- Web Scraping: Python libraries (Requests, Scrapy, BeautifulSoup)
+- Deployment: Docker (for containerization)
+- Cloud Platform: Google Cloud Platform (GCP) (for deployment and scaling)
 
-API Development: FastAPI (for building the backend API)
+## How to run application locally
 
-Natural Language Processing (NLP): OpenAI
+#### Creating Virtual Environment
+1. Create a virtual environment using the command `python -m venv <name of virtual env>`. 
+2. Install dependencies required to run the project using `pip install -r path/to/requirements.txt`
+3. Activate created virtual env by running `source <name of virtual env>/bin/activate`
 
-Whisper (for multilingual speech recognition of YouTube videos)
 
-GPT-3.5 Turbo (for large language model tasks like recipe summarization and embedding generation)
+##### How to run
+1. Create virtual environment and activate it
+2. create a .env file to add the credentials required to connect with snowflake, Pinecone API Key, and OpenAI API Key. The required fields are the following
+- AIRFLOW_UID=AIRFLOW_UID
+- AIRFLOW_PROJ_DIR=AIRFLOW_PROJ_DIR
+- SNOWFLAKE_USER = SNOWFLAKE_USER 
+- SNOWFLAKE_PASSWORD =SNOWFLAKE_PASSWORD
+- SNOWFLAKE_ACCOUNT = SNOWFLAKE_ACCOUNT
+- SQLALCHEMY_SILENCE_UBER_WARNING=1
+- SNOWFLAKE_TABLE = SNOWFLAKE_TABLE
+- SNOWFLAKE_TABLE_VIDEO = SNOWFLAKE_TABLE_VIDEO
+- SNOWFLAKE_SCHEMA = SNOWFLAKE_SCHEMA
+- SQLALCHEMY_SILENCE_UBER_WARNING=1 
+- SNOWFLAKE_DATABASE = SNOWFLAKE_DATABASE
+- SNOWFLAKE_WAREHOUSE = SNOWFLAKE_WAREHOUSE
+- PINECONE_API_KEY = PINECONE_API_KEY
+- OPENAI_API_KEY = OPENAI_API_KEY 
+- BASE_URL = BASE_URL
 
-Embeddings API (for storing recipe data in an efficient format)
+3. Install Requirements.txt file
+```
+pip install -r Requirements.txt
+```
 
-Data Storage:
+4. Run part, partB, partC and partD in the same order
+```
+python partA
+python partB
+python partC
+python partD
+```
+5. After generating and loading vectors, will run streamlit app for frontend
+```
+streamlit run app.py
+```
 
-Snowflake (for storing structured recipe data)
+#### Docker
 
-Pinecone (for storing recipe embeddings for efficient retrieval)
 
-User Interface: Streamlit (for creating a user-friendly web interface)
+##### How to run
+1. Pull the image from docker HUB
 
-Pipeline Orchestration: Apache Airflow (for automating data processing tasks)
+```sh
+docker pull grobid/grobid:0.8.0
+```
 
-Web Scraping: Python libraries (Requests, Scrapy, BeautifulSoup)
+2. This will create the grobid image and pull in the necessary dependencies.
+Here, we are using 0.8.0 version of Grobid.
 
-Deployment: Docker (for containerization)
-Cloud Platform: Google Cloud Platform (GCP) (for deployment and scaling)
+3. Once done, run the Docker image and map the port to whatever you wish on
+your host. We simply map port 8070 of the host to
+port 8070 of the Docker :
+
+```sh
+docker run --rm --init --ulimit core=0 -p 8070:8070 lfoppiano/grobid:0.8.0
+```
+
+4. Verify the deployment by navigating to your server address in
+your preferred browser.
+
+```sh
+127.0.0.1:8070
+```
+
+## References
+
 
 
 
@@ -159,7 +222,7 @@ Cloud Platform: Google Cloud Platform (GCP) (for deployment and scaling)
    - OpenAI API Documentation: [https://beta.openai.com/docs/](https://beta.openai.com/docs/)
    - Snowflake Documentation: [https://docs.snowflake.com/en/user-guide-intro.html](https://docs.snowflake.com/en/user-guide-intro.html)
    - Docker Documentation: [https://docs.docker.com/](https://docs.docker.com/)
-   - AWS Documentation: [https://aws.amazon.com/documentation/](https://aws.amazon.com/documentation/)
+   - GCP Documentation:[https://cloud.google.com/](https://cloud.google.com/docs/)
    - Streamlit Documentation: [https://docs.streamlit.io/](https://docs.streamlit.io/)
    - Apache Airflow Documentation: [https://airflow.apache.org/docs/apache-airflow/stable/index.html](https://airflow.apache.org/docs/apache-airflow/stable/index.html)
    - Pydantic Documentation: [https://pydantic-docs.helpmanual.io/](https://pydantic-docs.helpmanual.io/)
