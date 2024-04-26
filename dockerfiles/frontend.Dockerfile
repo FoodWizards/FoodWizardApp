@@ -12,4 +12,4 @@ HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
 COPY ./frontend /code
 
-ENTRYPOINT ["streamlit", "run", "/code/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "/code/Home.py", "--server.port=8501", "--server.address=0.0.0.0"]

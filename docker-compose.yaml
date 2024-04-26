@@ -290,26 +290,29 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-  frontend:  
-    build:
-      context: .
-      dockerfile: ./dockerfiles/frontend.Dockerfile
-    ports:
-      - "8501:8501"
-    environment:
-      <<: *airflow-common-env
-      # Required to handle warm shutdown of the celery workers properly
-      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
-      SNOWFLAKE_USER: ${SNOWFLAKE_USER}
-      SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
-      SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
-      SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
-      SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
-      BASE_URL: ${BASE_URL}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - backend
+  # frontend:  
+  #   build:
+  #     context: .
+  #     dockerfile: ./dockerfiles/frontend.Dockerfile
+  #   ports:
+  #     - "8501:8501"
+  #   environment:
+  #     <<: *airflow-common-env
+  #     # Required to handle warm shutdown of the celery workers properly
+  #     # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
+  #     SNOWFLAKE_USER: ${SNOWFLAKE_USER}
+  #     SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
+  #     SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
+  #     SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}
+  #     SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
+  #     BASE_URL: ${BASE_URL}
+  #     PINECONE_API_KEY: ${PINECONE_API_KEY}
+  #     OPENAI_API_KEY: ${OPENAI_API_KEY}
+  #     SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   depends_on:
+  #     - backend
     
   backend:  
     build:
@@ -328,6 +331,8 @@ services:
       SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
       PINECONE_API_KEY: ${PINECONE_API_KEY}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}
+      SNOWFLAKE_TABLE_VIDEO: ${SNOWFLAKE_TABLE_VIDEO}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

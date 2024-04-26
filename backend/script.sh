@@ -1,4 +1,4 @@
 #!/bin/sh
 
-python ./app/consumer.py &
-python ./app/main.py
+python ./app/main.py &
+python ./app/consumer.py 

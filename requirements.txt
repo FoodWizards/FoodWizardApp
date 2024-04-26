@@ -25,3 +25,4 @@ uvicorn
 streamlit-google-auth
 bs4
 requests
+streamlit-cookies-controller

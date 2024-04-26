@@ -1,6 +1,6 @@
 import fastapi
 import requests
-from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Request, Depends, Response
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Request, Depends, Response,APIRouter
 from pydantic import BaseModel, AnyHttpUrl
 from queryvectordb import getrecommendedrecipes
 import os
@@ -18,16 +18,20 @@ from json import dumps
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
-sys.path.insert(0, '/Users/asawari/Desktop/aaaaaa/FoodWizardApp/frontend')
-
 from database import connect_to_snowflake, get_favorite_recipes
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 app = FastAPI()
 
-# base url 
 
+# base url 
 BASE_URL = os.getenv("BASE_URL")
+
+prefix_router = APIRouter(prefix="/api/v1")
 
 # Replace with your Snowflake connection details
 SNOWFLAKE_ACCOUNT = os.getenv('SNOWFLAKE_ACCOUNT')
@@ -92,11 +96,11 @@ cursor.execute(create_warehouse_query)
 class DataItem(BaseModel):
     url: str
 
-@app.get("/")
+@prefix_router.get("/")
 async def root():
     return {"message": "Hello, Welcome to Foodwizard server"}
 
-@app.get(f"/snowflake_query")
+@prefix_router.get(f"/snowflake_query")
 async def query_snowflake():
     
     try:
@@ -123,7 +127,7 @@ async def query_snowflake():
         return {"error": str(e)}
     
 
-@app.get("/get_recommeded_recipies")
+@prefix_router.get("/get_recommeded_recipies")
 async def get_recommeded_recipies(request:dict):
     text=request.get("text")
     try:
@@ -135,34 +139,32 @@ async def get_recommeded_recipies(request:dict):
         return {"error": str(e)}
 
 def send_to_message_broker(link, email):
-    producer = KafkaProducer(bootstrap_servers=['host.docker.internal:9092'],
+    producer = KafkaProducer(bootstrap_servers=['host.docker.internal:29092'],
                             value_serializer=lambda x: dumps(x).encode('utf-8'))
-
 
 
     data = {"url": link, "email": email}
     future = producer.send(topic='url_queue', value=data)
 
+    logger.info(f"Inserting {data} into kafka")
     # Block for 'synchronous' sends
     try:
-        result = future.get(timeout=5)
+        result = future.get(timeout=10)
         return Response(content="Successfully added to queue. You can check back later on your favourite URLs page!", status_code=200)
-    except KafkaError:
-        print('Kafka producer did not send message to kafka server')
+    except KafkaError as e:
+        logger.info(f'Kafka producer did not send message to kafka server {e}')
         return Response(content="Service is currently down!", status_code=503)
 
     
-@app.post("/process_url")
+@prefix_router.post("/process_url")
 async def receive_data(data_item: DataItem, authorization: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
     # Process the received data
     token = authorization.credentials
-    print("Received URL:", data_item.url)
-    #print("Received User ID:", data_item.email)
+    logger.info("Received URL:", data_item.url)
     try:
         decoded_data = jwt.decode(jwt=token,
                                 algorithms=["RS256"],
-                                options={"verify_signature": False
-                                })
+                                options={"verify_signature": False})
 
         # Add the email and name to the decoded_data dictionary
         email = decoded_data.get("email")  # Assuming the email is present in the decoded token
@@ -173,17 +175,17 @@ async def receive_data(data_item: DataItem, authorization: HTTPAuthorizationCred
         return send_to_message_broker(link=data_item.url, email=email)  
 
     except Exception as e:
-        print(e)
+        logger.info(e)
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-@app.get("/favorite-recipes/{user_email}")
+@prefix_router.get("/favorite-recipes/{user_email}")
 def get_favorite_recipes_api(user_email: str):
     ctx = connect_to_snowflake()
     cursor = ctx.cursor()
     cursor.execute("SELECT DISTINCT title, link_video, generated_recipe, user_email FROM video_table WHERE user_email = %s", (user_email,))
     favorite_recipes = cursor.fetchall()  # Fetch all rows
-    print('favorite_recipes:', favorite_recipes)
+    logger.info('favorite_recipes:', favorite_recipes)
     result = []
     for recipe in favorite_recipes:
         TITLE , LINK_VIDEO , GENERATED_RECIPE , USER_EMAIL = recipe
@@ -200,7 +202,7 @@ def insert_user_info(cursor, email, name):
 
         if result:
             # User already exists
-            print('User already exists')
+            logger.info('User already exists')
             return result[0]  # Return the existing user ID
         else:
             # User doesn't exist, insert into USER_INFO
@@ -213,10 +215,10 @@ def insert_user_info(cursor, email, name):
             if result:
                 return result[0]  # Return the newly inserted user ID
             else:
-                print(f"Error: Failed to retrieve user ID for email: {email}")
+                logger.info(f"Error: Failed to retrieve user ID for email: {email}")
                 return None
     except Exception as e:
-        print(f"Error inserting user info: {e}")
+        logger.info(f"Error inserting user info: {e}")
         return None
 
 def insert_favorite_url(cursor, email, user_id, url):
@@ -224,10 +226,10 @@ def insert_favorite_url(cursor, email, user_id, url):
         # Insert URL into USER_FAVORITE_URL
         insert_url_query = "INSERT INTO USER_FAVORITE_URL (UserID,email, URL) VALUES (%s, %s, %s)"
         cursor.execute(insert_url_query, (user_id, email, url))
-        print(f"URL added for user ID {user_id}, email {email}: url={url}")
+        logger.info(f"URL added for user ID {user_id}, email {email}: url={url}")
         return True
     except Exception as e:
-        print(f"Error inserting favorite URL: {e}")
+        logger.info(f"Error inserting favorite URL: {e}")
         return False
 
 def validate_user_and_insert(email, name):
@@ -242,7 +244,7 @@ def validate_user_and_insert(email, name):
         cursor.close()
         ctx.commit()
     except Exception as e:
-        print(f"Error: {e}")
+        logger.info(f"Error: {e}")
         if ctx:
             ctx.rollback()
 
@@ -257,6 +259,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Now add the router to the app
+app.include_router(prefix_router)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, root_path="/api/v1", log_level="debug")
+    logging.basicConfig(filename='/tmp/backend.log', level=logging.INFO)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="debug")
+    
