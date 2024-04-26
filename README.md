@@ -130,7 +130,7 @@ Concise and Informative Demonstration:A concise, informative 10-minute video is 
 - Deployment: Docker (for containerization)
 - Cloud Platform: Google Cloud Platform (GCP) (for deployment and scaling)
 
-## How to run application locally
+## How to run application 
 
 #### Creating Virtual Environment
 1. Create a virtual environment using the command `python -m venv <name of virtual env>`. 
