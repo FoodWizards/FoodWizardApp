@@ -47,7 +47,7 @@ def search_recipe():
 
     with col1:
         filters = {}
-        filters["RECIPENAME"] = st.text_input("Recipe Name")
+        filters["RECIPENAME"] = st.text_input("Recipe Name", key='recipe_name1')
         filters["SERVINGS"] = st.number_input("Servings", min_value=0, step=1)
 
     with col2:
@@ -60,7 +60,7 @@ def search_recipe():
 
     # Additional inputs below the columns
    
-    filters["INGREDIENTS"] = st.text_input("Ingredients")
+    filters["INGREDIENTS"] = st.text_input("Ingredients", key='recipe_name2')
 
     # Apply filters
     if st.button("Apply Filters"):

@@ -95,6 +95,11 @@ cursor.execute(create_warehouse_query)
 
 class DataItem(BaseModel):
     url: str
+    email: str
+    name: str
+
+class URLItem(BaseModel):
+    url: str
 
 @prefix_router.get("/")
 async def root():
@@ -157,26 +162,54 @@ def send_to_message_broker(link, email):
 
     
 @prefix_router.post("/process_url")
-async def receive_data(data_item: DataItem, authorization: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
+async def receive_data(data_item: DataItem):
     # Process the received data
-    token = authorization.credentials
-    logger.info("Received URL:", data_item.url)
+    logger.info(f"Received URL: {data_item.url}")
     try:
-        decoded_data = jwt.decode(jwt=token,
-                                algorithms=["RS256"],
-                                options={"verify_signature": False})
-
         # Add the email and name to the decoded_data dictionary
-        email = decoded_data.get("email")  # Assuming the email is present in the decoded token
-        name = decoded_data.get("name")  
+        email = data_item.email  # Assuming the email is present in the decoded token
         
-        # Here, you can write the email, name, and other data to your database or perform any other operations
-        validate_user_and_insert(email, name)
-        return send_to_message_broker(link=data_item.url, email=email)  
-
+        if data_item and data_item.email and data_item.url and data_item.name:
+            # Here, you can write the email, name, and other data to your database or perform any other operations
+            validate_user_and_insert(data_item.email, data_item.name)
+            return send_to_message_broker(link=data_item.url, email=email)  
+        return Response(content="Bad request!", status_code=400)
     except Exception as e:
         logger.info(e)
         raise HTTPException(status_code=401, detail="Invalid token")
+    
+
+@prefix_router.post("/process_url_extension")
+async def receive_data_extension(data_item: URLItem, authorization: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
+    try:
+        # Extract the token from the authorization credentials
+        token = authorization.credentials
+        
+        # Verify token presence
+        if not token:
+            raise HTTPException(status_code=401, detail="Missing token")
+        
+        # Decode the token
+        decoded_data = jwt.decode(token, algorithms=["RS256"], options={"verify_signature": False})
+        
+        
+        # Extract email and name from decoded token
+        email = decoded_data.get("email")
+        name = decoded_data.get("name")
+        
+        # Perform any additional validation or processing
+        validate_user_and_insert(email, name)
+        
+        # Send data to message broker
+        send_to_message_broker(link=data_item.url, email=email)
+        
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Expired token")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        logger.error(f"Error processing URL: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal server error{e}")
 
 
 @prefix_router.get("/favorite-recipes/{user_email}")

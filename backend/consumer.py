@@ -72,7 +72,7 @@ def convertToRecipeFormat(context):
     Detailed Cooking Instructions: 
     Tags: 
 
-    Convert into the standard recipe format given above from the context given below. Do not include a title. If you are not sure(probability < 50%), then fill the field with None. If the context does not correspond to a recipe then return "This link does not talk about cooking. Too bad!"
+    Convert into the standard recipe format given above from the context given below. Do not include a title. If you are not sure(probability < 50%), then fill the field with None. If the context does not correspond to a recipe then return "This link does not talk about cooking or we were not able to understand it well. Sorry about that!"
     {context}
     """
     stream = openai_client.chat.completions.create(
