@@ -23,28 +23,28 @@ class FoodSpiderAK(scrapy.Spider):
         )
         self.driver.get(url)
         count = 0
-        # while True:
-        count += 1
-        time.sleep(3)
-        # Extracting links with class name 'CoveoResultLink'
-        links = self.driver.find_elements(By.CSS_SELECTOR, "a[itemprop='url']")
-        # Extract and print the href attribute of each link
-        for linkTag in links:
-            href = linkTag.get_attribute("href")
-            print("-------------------------NEXT---URL--------------------------")
-            print(href)
-            yield scrapy.Request(href)
+        while True:
+            count += 1
+            time.sleep(3)
+            # Extracting links with class name 'CoveoResultLink'
+            links = self.driver.find_elements(By.CSS_SELECTOR, "a[itemprop='url']")
+            # Extract and print the href attribute of each link
+            for linkTag in links:
+                href = linkTag.get_attribute("href")
+                print("-------------------------NEXT---URL--------------------------")
+                print(href)
+                yield scrapy.Request(href)
 
-            # # If button available click and go to next page else break
-            # try:
-            #     nextButton = self.driver.find_element(By.CSS_SELECTOR, "a.page-link[title='Next']")
-            #     # driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-            #     time.sleep(0.5)
-            #     nextButton.click()
-            #     print("-------------------------NEXT---PAGE--------------------------")
-            # except:
-            #     print("Done scraping")
-            #     break
+            # If button available click and go to next page else break
+            try:
+                nextButton = self.driver.find_element(By.CSS_SELECTOR, "a.page-link[title='Next']")
+                # driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+                time.sleep(0.5)
+                nextButton.click()
+                print("-------------------------NEXT---PAGE--------------------------")
+            except:
+                print("Done scraping")
+                break
 
     def parse(self, response):
         RecipeName = response.css("h1.recipe-title ::text").get()

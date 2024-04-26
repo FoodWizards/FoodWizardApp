@@ -22,25 +22,25 @@ class FoodSpiderRB(scrapy.Spider):
         )
         self.driver.get(url)
         count = 0
-        # while True:
-        count += 1
-        time.sleep(3)
-        # Extracting links with class name 'CoveoResultLink'
-        links = self.driver.find_elements(By.CSS_SELECTOR, ".rc_thumb_wrap.rb_thumb_wrap a")
-        # Extract and print the href attribute of each link
-        for linkTag in links:
-            href = linkTag.get_attribute("href")
-            yield scrapy.Request(href)
+        while True:
+            count += 1
+            time.sleep(3)
+            # Extracting links with class name 'CoveoResultLink'
+            links = self.driver.find_elements(By.CSS_SELECTOR, ".rc_thumb_wrap.rb_thumb_wrap a")
+            # Extract and print the href attribute of each link
+            for linkTag in links:
+                href = linkTag.get_attribute("href")
+                yield scrapy.Request(href)
             
             # If button available click and go to next page else break
-            # try:
-            #     nextButton = self.driver.find_element(By.CSS_SELECTOR, "li[class='active next_page']")
-            #     self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-            #     time.sleep(0.5)
-            #     nextButton.click()
-            # except:
-            #     print("Done scraping")
-            #     break
+            try:
+                nextButton = self.driver.find_element(By.CSS_SELECTOR, "li[class='active next_page']")
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+                time.sleep(0.5)
+                nextButton.click()
+            except:
+                print("Done scraping")
+                break
 
     def parse(self, response):
         RecipeName = response.css('h1::text').get()
