@@ -11,6 +11,9 @@ from naviagation.search_recipe import search_recipe
 from naviagation.video_url_processor import process_url
 from database import connect_to_snowflake, insert_user_info
 
+import warnings 
+warnings.filterwarnings("ignore")
+
 st.title('FoodWizard')
 
 def main():
@@ -29,12 +32,10 @@ def main():
         render_user_info(ctx)
         pages = {
             "My info": show_info,
-            "Home": process_url,
+            "Process Video URL": process_url,
             "Favorite Recipe": fav_recipe,
             "Find Recipe" : find_recipe,
             "Search Recipe" : search_recipe
-            
-    
             # Add more pages here
         }
 

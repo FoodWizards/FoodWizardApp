@@ -3,12 +3,12 @@ const submitBtn = document.getElementById('submitBtn');
 const urlInput = document.getElementById('urlInput');
 
 const youtubeUrlRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?(.*&)?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-const BASE_URL = process.env.BASE_URL
+const BASE_URL = 'localhost:8080/api/v1'
 async function sendDataToServer(url) {
     try {
         const tokenData = await chrome.storage.local.get('foodWizard_token');
         const token = tokenData.foodWizard_token;
-            const response = await fetch('http://' + BASE_URL + '/process_url', {
+            const response = await fetch('http://' + BASE_URL + '/process_url_extension', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,9 +38,9 @@ async function sendDataToServer(url) {
   
     try {
       const data = await sendDataToServer(url);
+      alert("URL put successfully on queue. You can check back later on your favourite recipes tab.")
       console.log('Response from FastAPI endpoint:', data); // Handle the response data as needed
   
-      // Optionally, clear the input field after successful submission
       urlInput.value = '';
     } catch (error) {
       console.error(error);
