@@ -2,34 +2,28 @@
 A culinary companion empowered by AI to elevate your cooking with top-notch recipe
 <img width="1061" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/d27fe38d-fc4e-43e9-bda1-8a3e5d1ab265">
 
-Project Overview:
-Scope:
+### Project Overview:
+### Scope:
 
 FoodWizard is a platform designed to simplify recipe discovery and recommendation. It offers two key functionalities: YouTube video summarization and personalized recipe recommendations based on user preferences.
 
-Functionalities:
-YouTube Video Summarization:
-Users input YouTube video links of cooking tutorials.
-FoodWizard extracts and summarizes recipe content using OpenAI.
-Users can specify parameters like difficulty level and ingredients.
-Recipe Recommendations:
-Utilizes the Food.com dataset stored on Snowflake.
-Offers personalized recipe recommendations based on user preferences, dietary restrictions, and flavor profiles.
-Technology Stack:
-API Development: FastAPI
-Natural Language Processing: OpenAI
-Data Storage: Snowflake, Pinecone
-User Interface: Streamlit
-Automation: Apache Airflow
-Deployment: Docker, AWS
 
-Workflow:
-Data acquisition from YouTube and Food.com.
-Processing and summarization using OpenAI.
-Recommendation generation based on user preferences.
-User interaction through intuitive interfaces.
-Automation of data processing tasks.
-Deployment on AWS for scalability.
+### Functionalities:
+
+1. **Chrome Extension for Recipe Collection**: 
+   - Users can save their favorite cooking tutorial videos from YouTube by inputting the video links.
+   - Saved videos are organized into a personalized recipe collection for each user.
+
+2. **YouTube Video Summarization with FoodWizard**: 
+   - Utilizes FoodWizard, powered by OpenAI's technology, to extract content from cooking tutorials available in various languages such as Hindi, Tamil, Marathi, and English.
+
+3. **Recipe Recommendations**: 
+   - Users can input any text, including specific instructions or preferences, and receive personalized recipe recommendations based on their input.
+
+4. **Recipe Filtering**: 
+   - Allows users to filter and search through the listed recipes, making it easier to find recipes based on their preferences and dietary requirements.
+
+
 
 Stakeholders:
 The end users for FoodWizard include:
@@ -37,18 +31,18 @@ Cooking enthusiasts seeking recipe inspiration and guidance.
 Individuals with dietary restrictions or specific flavor preferences looking for tailored recipe recommendations.
 Those interested in leveraging technology to simplify their culinary journey and explore new dishes.
 
-CodeLab: https://codelabs-preview.appspot.com/?file_id=1T4FIak6iigOSCrGLP44bsKpyt_S_kZ1uKInPsoNiBUM#0
+### CodeLab: https://codelabs-preview.appspot.com/?file_id=1T4FIak6iigOSCrGLP44bsKpyt_S_kZ1uKInPsoNiBUM#0
 
-Architecture Diagram:
+### Architecture Diagram:
 <img width="908" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/6dfb6c52-9854-4d84-9e39-8517705e1918">
 
 
-Methodlogy: 
+### Methodology: 
 
 
 Data Acquisition:
 Fetch cooking tutorial links from YouTube or Blog, sent by user through chrome extension
-Scrape recipe data from sources - AllRecipes.com and BBC Food
+Scrape recipe data from sources - Archana's kitchen & Ranveer Brar
 
 Chrome Extension:
 Develop a Chrome extension to allow users to send cooking tutorial videos from YouTube or specific blogs to be documented, attached to his account
