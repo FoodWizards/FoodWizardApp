@@ -43,6 +43,50 @@ Architecture Diagram:
 <img width="908" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/6dfb6c52-9854-4d84-9e39-8517705e1918">
 
 
+Methodlogy: 
+
+
+Data Acquisition:
+Fetch cooking tutorial links from YouTube or Blog, sent by user through chrome extension
+Scrape recipe data from sources - AllRecipes.com and BBC Food
+
+Chrome Extension:
+Develop a Chrome extension to allow users to send cooking tutorial videos from YouTube or specific blogs to be documented, attached to his account
+
+
+<img width="609" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/e7bb1bfd-63c5-4514-b2c4-6c9538990d4c">
+
+Data Processing and Summarization:
+Process and summarize recipe data using OpenAI's natural language processing capabilities
+
+<img width="1245" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/c52eee50-ac02-47d9-a253-9b857a03b0a3">
+
+Recommendation Generation:
+Generate personalized recipe recommendations based on user preferences and dietary restrictions
+Store recipes from DB as embeddings in Pinecone for efficient retrieval
+
+<img width="884" alt="image" src="https://github.com/FoodWizards/FoodWizardApp/assets/114360071/c5873c80-6106-4881-aaf6-119de95fbbf1">
+
+
+User Interaction:
+Develop a Streamlit interface for users to specify preferences, fetch all recipes documented for the user, and explore summarized recipes and recommendations
+Implement filters and search functionality to search for videos and display top-matched recipes from Pinecone
+
+Web Scraping:
+Create a web scraper to crawl and extract recipe data from AllRecipes.com and BBC Food websites periodically
+Update the Snowflake database with the latest scraped recipe data
+
+Scheduling and Automation:
+Implement a scheduler to periodically scrape recipe data from websites
+Utilize Apache Airflow to automate data processing tasks, including video processing, summarization, embedding generation, and web scraping
+
+Deployment:
+Containerize the application using Docker for consistency and portability
+Deploy the containerized application on Amazon Web Services (AWS) for scalability and reliability
+
+Testing:
+Implement both Unit testing to validate the functionality and integration of different components within the application.
+Implement Continuous Integration (CI) pipeline using Git Actions to automate testing and build upon code changes.
 
 
 Resources and Team:
