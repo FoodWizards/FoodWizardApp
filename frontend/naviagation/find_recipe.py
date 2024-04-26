@@ -8,9 +8,8 @@ from openai import OpenAI
 BASE_URL = os.getenv("BASE_URL")
 Data_URL = f"http://{BASE_URL}/get_recommeded_recipies"
 
-openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 def _fetchAnswerFromGPT(contextStr):
+    openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     prompt = f"""Dont infer just format this given context below '{contextStr} and do not include text like these 'Here is the formatted version of the given context:' """
     response = openai_client.chat.completions.create(
         model="gpt-3.5-turbo-16k",

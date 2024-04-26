@@ -1,6 +1,6 @@
 import fastapi
 import requests
-from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Request, Depends, Response
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Request, Depends, Response,APIRouter
 from pydantic import BaseModel, AnyHttpUrl
 from queryvectordb import getrecommendedrecipes
 import os
@@ -18,16 +18,16 @@ from json import dumps
 from kafka import KafkaProducer
 from kafka.errors import KafkaError
 
-sys.path.insert(0, '/Users/asawari/Desktop/aaaaaa/FoodWizardApp/frontend')
-
 from database import connect_to_snowflake, get_favorite_recipes
 
 load_dotenv()
 app = FastAPI()
 
-# base url 
 
+# base url 
 BASE_URL = os.getenv("BASE_URL")
+
+prefix_router = APIRouter(prefix="/api/v1")
 
 # Replace with your Snowflake connection details
 SNOWFLAKE_ACCOUNT = os.getenv('SNOWFLAKE_ACCOUNT')
@@ -92,11 +92,11 @@ cursor.execute(create_warehouse_query)
 class DataItem(BaseModel):
     url: str
 
-@app.get("/")
+@prefix_router.get("/")
 async def root():
     return {"message": "Hello, Welcome to Foodwizard server"}
 
-@app.get(f"/snowflake_query")
+@prefix_router.get(f"/snowflake_query")
 async def query_snowflake():
     
     try:
@@ -123,7 +123,7 @@ async def query_snowflake():
         return {"error": str(e)}
     
 
-@app.get("/get_recommeded_recipies")
+@prefix_router.get("/get_recommeded_recipies")
 async def get_recommeded_recipies(request:dict):
     text=request.get("text")
     try:
@@ -143,16 +143,17 @@ def send_to_message_broker(link, email):
     data = {"url": link, "email": email}
     future = producer.send(topic='url_queue', value=data)
 
+    print(f"Inserting {data} into kafka")
     # Block for 'synchronous' sends
     try:
-        result = future.get(timeout=5)
+        result = future.get(timeout=10)
         return Response(content="Successfully added to queue. You can check back later on your favourite URLs page!", status_code=200)
-    except KafkaError:
-        print('Kafka producer did not send message to kafka server')
+    except KafkaError as e:
+        print(f'Kafka producer did not send message to kafka server {e}')
         return Response(content="Service is currently down!", status_code=503)
 
     
-@app.post("/process_url")
+@prefix_router.post("/process_url")
 async def receive_data(data_item: DataItem, authorization: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
     # Process the received data
     token = authorization.credentials
@@ -177,7 +178,7 @@ async def receive_data(data_item: DataItem, authorization: HTTPAuthorizationCred
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-@app.get("/favorite-recipes/{user_email}")
+@prefix_router.get("/favorite-recipes/{user_email}")
 def get_favorite_recipes_api(user_email: str):
     ctx = connect_to_snowflake()
     cursor = ctx.cursor()
@@ -257,6 +258,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Now add the router to the app
+app.include_router(prefix_router)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, root_path="/api/v1", log_level="debug")
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="debug")

@@ -1,6 +1,9 @@
 import streamlit as st
 import requests
 import os
+from streamlit_cookies_controller import CookieController
+
+controller = CookieController()
 
 BASE_URL = os.getenv('BASE_URL')
 
@@ -16,7 +19,8 @@ def process_url():
     if url:
         # Call the API with the provided URL
         try:
-            response = requests.post(API_URL, json={"url": url})
+            controller = CookieController()
+            response = requests.post(API_URL, json={"url": url}, headers={"Authorization": f"Bearer {controller.get('fW_cookie')}"})
             response.raise_for_status()  # Raise an exception for non-2xx status codes
             result = response.json()
 
