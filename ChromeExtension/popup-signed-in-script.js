@@ -3,7 +3,7 @@ const submitBtn = document.getElementById('submitBtn');
 const urlInput = document.getElementById('urlInput');
 
 const youtubeUrlRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?(.*&)?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-const BASE_URL = 'localhost:8080/api/v1'
+const BASE_URL = '35.237.162.115:8080/api/v1'
 async function sendDataToServer(url) {
     try {
         const tokenData = await chrome.storage.local.get('foodWizard_token');
