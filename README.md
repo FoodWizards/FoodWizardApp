@@ -217,7 +217,7 @@ your preferred browser.
      https://ranveerbrar.com/
           
 
-4. Documentation and References:
+## Documentation and References:
    - FastAPI Documentation: [https://fastapi.tiangolo.com/](https://fastapi.tiangolo.com/)
    - OpenAI API Documentation: [https://beta.openai.com/docs/](https://beta.openai.com/docs/)
    - Snowflake Documentation: [https://docs.snowflake.com/en/user-guide-intro.html](https://docs.snowflake.com/en/user-guide-intro.html)
@@ -230,8 +230,11 @@ your preferred browser.
 
 These resources provide comprehensive documentation, tutorials, and references for the tools, technologies, and libraries used in the project, aiding in the development and understanding of FoodWizard.
 
-Team:
-  - Hariharan Sundaram
-  - Asawari Kadam
-  - Rutuja Kute
+## Team Information and Contribution
+
+| Name | Contribution % | Contribution |
+| --- | --- | --- |
+Asawari Kadam | 33.33% | Create chrome extension , Backend - Fast API , Frontend - Streamlit |
+Hariharan Sundaram | 33.33%  | Video processing pipeline - Airflow, CI Integration, Docker |
+Rutuja Kute | 33.33%  |Webscraping pipeline , Application testing, Deployment|
 
