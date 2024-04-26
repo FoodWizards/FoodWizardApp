@@ -157,50 +157,17 @@ Concise and Informative Demonstration:A concise, informative 10-minute video is 
 - OPENAI_API_KEY = OPENAI_API_KEY 
 - BASE_URL = BASE_URL
 
-3. Install Requirements.txt file
-```
-pip install -r Requirements.txt
-```
-
-4. Run part, partB, partC and partD in the same order
-```
-python partA
-python partB
-python partC
-python partD
-```
-5. After generating and loading vectors, will run streamlit app for frontend
-```
-streamlit run app.py
-```
-
-#### Docker
+3.Docker
 
 
 ##### How to run
-1. Pull the image from docker HUB
 
 ```sh
-docker pull grobid/grobid:0.8.0
+ docker compose build
+ docker compose up
 ```
 
-2. This will create the grobid image and pull in the necessary dependencies.
-Here, we are using 0.8.0 version of Grobid.
 
-3. Once done, run the Docker image and map the port to whatever you wish on
-your host. We simply map port 8070 of the host to
-port 8070 of the Docker :
-
-```sh
-docker run --rm --init --ulimit core=0 -p 8070:8070 lfoppiano/grobid:0.8.0
-```
-
-4. Verify the deployment by navigating to your server address in
-your preferred browser.
-
-```sh
-127.0.0.1:8070
-```
 
 ## References
 
