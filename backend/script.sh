@@ -1,2 +1,4 @@
-python consumer.py &
-uvicorn app.main:app --host 0.0.0.0 --port 80
+#!/bin/sh
+
+python ./app/consumer.py &
+python ./app/main.py

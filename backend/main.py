@@ -1,6 +1,6 @@
 import fastapi
 import requests
-from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Request, Depends
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query, Request, Depends, Response
 from pydantic import BaseModel, AnyHttpUrl
 from queryvectordb import getrecommendedrecipes
 import os
@@ -13,6 +13,10 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import snowflake.connector
 from dotenv import load_dotenv
 import sys
+from time import sleep
+from json import dumps
+from kafka import KafkaProducer
+from kafka.errors import KafkaError
 
 sys.path.insert(0, '/Users/asawari/Desktop/aaaaaa/FoodWizardApp/frontend')
 
@@ -92,8 +96,6 @@ class DataItem(BaseModel):
 async def root():
     return {"message": "Hello, Welcome to Foodwizard server"}
 
-
-
 @app.get(f"/snowflake_query")
 async def query_snowflake():
     
@@ -117,7 +119,6 @@ async def query_snowflake():
        
         return {"data": data, "column_names":column_names}
 
-
     except Exception as e:
         return {"error": str(e)}
     
@@ -132,6 +133,24 @@ async def get_recommeded_recipies(request:dict):
 
     except Exception as e:
         return {"error": str(e)}
+
+def send_to_message_broker(link, email):
+    producer = KafkaProducer(bootstrap_servers=['host.docker.internal:9092'],
+                            value_serializer=lambda x: dumps(x).encode('utf-8'))
+
+
+
+    data = {"url": link, "email": email}
+    future = producer.send(topic='url_queue', value=data)
+
+    # Block for 'synchronous' sends
+    try:
+        result = future.get(timeout=5)
+        return Response(content="Successfully added to queue. You can check back later on your favourite URLs page!", status_code=200)
+    except KafkaError:
+        print('Kafka producer did not send message to kafka server')
+        return Response(content="Service is currently down!", status_code=503)
+
     
 @app.post("/process_url")
 async def receive_data(data_item: DataItem, authorization: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
@@ -145,15 +164,14 @@ async def receive_data(data_item: DataItem, authorization: HTTPAuthorizationCred
                                 options={"verify_signature": False
                                 })
 
-                # Add the email and name to the decoded_data dictionary
+        # Add the email and name to the decoded_data dictionary
         email = decoded_data.get("email")  # Assuming the email is present in the decoded token
         name = decoded_data.get("name")  
         
-
         # Here, you can write the email, name, and other data to your database or perform any other operations
-        validate_user_and_insert( email, name, data_item.url)
-        return {"message": "Data received successfully"}
-    
+        validate_user_and_insert(email, name)
+        return send_to_message_broker(link=data_item.url, email=email)  
+
     except Exception as e:
         print(e)
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -212,7 +230,7 @@ def insert_favorite_url(cursor, email, user_id, url):
         print(f"Error inserting favorite URL: {e}")
         return False
 
-def validate_user_and_insert(email, name, url):
+def validate_user_and_insert(email, name):
     try:
         # Establish connection
         cursor = ctx.cursor()
@@ -221,10 +239,6 @@ def validate_user_and_insert(email, name, url):
 
         # Insert user info
         user_id = insert_user_info(cursor, email, name)
-        if user_id is not None:
-            # User info inserted successfully, insert favorite URL
-            insert_favorite_url(cursor, email, user_id, url)
-
         cursor.close()
         ctx.commit()
     except Exception as e:
