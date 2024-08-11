@@ -66,8 +66,8 @@ def find_recipe():
                     'YoutubeLink': row['YoutubeLink'] if row['YoutubeLink'] else 'Not Mentioned',
                     'CookTimeInMinutes': row['CookTimeInMinutes'] if row['CookTimeInMinutes'] else 'Not Mentioned',
                     'PrepTimeInMinutes': row['PrepTimeInMinutes'] if row['PrepTimeInMinutes'] else 'Not Mentioned',
-                    'Instructions': _fetchAnswerFromGPT(row['Instructions']) if row['Instructions'] else 'Not Mentioned',
-                    'Ingredients': _fetchAnswerFromGPT(row['Ingredients']) if row['Ingredients'] else 'Not Mentioned'
+                    'Ingredients': _fetchAnswerFromGPT(row['Ingredients']) if row['Ingredients'] else 'Not Mentioned',
+                    'Instructions': _fetchAnswerFromGPT(row['Instructions']) if row['Instructions'] else 'Not Mentioned'
                 }
         
                 with st.expander(recipe_name):

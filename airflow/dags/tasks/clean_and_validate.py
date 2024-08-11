@@ -39,7 +39,7 @@ def _startValidation(filePath, ti):
     filtered_df.loc[:, 'Course'] = filtered_df['Course'].fillna(str("")).astype(str)
     filtered_df.loc[:, 'Cuisine'] = filtered_df['Cuisine'].fillna(str("")).astype(str)
     filtered_df.loc[:, 'Diet'] = filtered_df['Diet'].fillna(str("")).astype(str)
-    filtered_df.loc[:, 'Ingredients'] = filtered_df['Diet'].fillna(str("")).astype(str)
+    filtered_df.loc[:, 'Ingredients'] = filtered_df['Ingredients'].fillna(str("")).astype(str)
     filtered_df.loc[:, 'Instructions'] = filtered_df['Instructions'].fillna(str("")).astype(str)
     filtered_df.loc[:, 'YouTubeLink'] = filtered_df['YouTubeLink'].fillna(str("")).astype(str)
     filtered_df.loc[:, 'Tags'] = filtered_df['Tags'].fillna(str("")).astype(str)
