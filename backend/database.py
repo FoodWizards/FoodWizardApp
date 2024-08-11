@@ -4,7 +4,7 @@ import os
 import pandas as pd
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(verbose=True, override=True)
 
 def connect_to_snowflake():
     SNOWFLAKE_ACCOUNT = os.getenv('SNOWFLAKE_ACCOUNT')

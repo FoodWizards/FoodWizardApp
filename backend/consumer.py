@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import ffmpeg
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
-from pytube import YouTube
+from pytubefix import YouTube
 import json
 import logging
 
@@ -67,16 +67,17 @@ def convertToTranscript():
 
 def convertToRecipeFormat(context):
     print("Starting transcript to recipe conversion")
+    print(context)
     prompt = f"""
     Ingredients:
     Detailed Cooking Instructions: 
     Tags: 
 
-    Convert into the standard recipe format given above from the context given below. Do not include a title. If you are not sure(probability < 50%), then fill the field with None. If the context does not correspond to a recipe then return "This link does not talk about cooking. Too bad!"
+    Convert into the standard recipe format given above from the context given below. Do not include a title. If you are not sure, then fill the field with None. If the context does not correspond to a recipe then return "This link does not talk about cooking. Too bad!"
     {context}
     """
     stream = openai_client.chat.completions.create(
-        model="gpt-3.5-turbo-16k",
+        model="gpt-4o-mini-16k",
         messages=[
             {"role": "user", "content": prompt}
         ],
@@ -88,6 +89,7 @@ def convertToRecipeFormat(context):
         if chunk.choices[0].delta.content is not None:
             text = text + chunk.choices[0].delta.content
     print("Transcript to recipe conversion successful")
+    print(text)
     return text
 
 def uploadToSnowflake(title, recipe, link, system_message, email):

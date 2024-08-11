@@ -4,7 +4,7 @@ import os
 import pandas as pd
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(verbose=True, override=True)
 
 def connect_to_snowflake():
     SNOWFLAKE_ACCOUNT = os.getenv('SNOWFLAKE_ACCOUNT')
@@ -59,3 +59,4 @@ def get_favorite_recipes(ctx, email):
     search_recipe_query = "SELECT link_video, generated_recipe, user_email FROM video_table WHERE user_email = %s"
     cursor.execute(search_recipe_query, (email,))
     fav_recipe = cursor.fetchall()
+

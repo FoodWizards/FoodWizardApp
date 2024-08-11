@@ -8,7 +8,7 @@ tiktoken
 PyPDF2
 boto3
 streamlit
-pytube
+pytubefix
 ffmpeg-python
 scrapy
 ipython
@@ -19,7 +19,7 @@ validators
 pydantic 
 pandas
 snowflake-sqlalchemy
-SQLAlchemy
+sqlalchemy==1.4.52
 fastapi
 uvicorn
 streamlit-google-auth

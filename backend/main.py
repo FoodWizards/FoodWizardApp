@@ -24,7 +24,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-load_dotenv()
+load_dotenv(verbose=True, override=True)
 app = FastAPI()
 
 
@@ -263,6 +263,8 @@ app.add_middleware(
 app.include_router(prefix_router)
 
 if __name__ == "__main__":
+    print("Hari started")
+    print(os.getenv("OPENAI_API_KEY"))
     logging.basicConfig(filename='/tmp/backend.log', level=logging.INFO)
     uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="debug")
     

@@ -4,8 +4,10 @@ import os
 from pinecone import Pinecone, PodSpec, ServerlessSpec
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(verbose=True, override=True)
 
+print("Hari started")
+print(os.getenv("OPENAI_API_KEY"))
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # The recipe name is "{row.recipename}". 
@@ -48,7 +50,7 @@ def _fetchAnswerFromGPT(contextStr):
     
             """
     response = openai_client.chat.completions.create(
-        model="gpt-3.5-turbo-16k",
+        model="gpt-4o-mini-16k",
         messages=[
             {"role": "system", "content": """You are a helpful and smart bot who tries to fill in the template given below by the context given by user. """},
             {"role": "user", "content": prompt}
