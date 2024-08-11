@@ -52,7 +52,7 @@ def main():
             st.session_state['connected'] = False
             st.session_state['user_info'] = None
             ctx.close()
-            st.experimental_rerun()
+            st.rerun()
            
     # Render the dashboard page if authenticated
 

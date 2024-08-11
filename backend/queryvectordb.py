@@ -50,7 +50,7 @@ def _fetchAnswerFromGPT(contextStr):
     
             """
     response = openai_client.chat.completions.create(
-        model="gpt-4o-mini-16k",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": """You are a helpful and smart bot who tries to fill in the template given below by the context given by user. """},
             {"role": "user", "content": prompt}

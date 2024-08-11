@@ -12,7 +12,7 @@ def _fetchAnswerFromGPT(contextStr):
     openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     prompt = f"""Dont infer just format this given context below '{contextStr} and do not include text like these 'Here is the formatted version of the given context:' """
     response = openai_client.chat.completions.create(
-        model="gpt-4o-mini-16k",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": """You are a helpful bot who just formats the text given by the user. """},
             {"role": "user", "content": prompt}
@@ -35,7 +35,7 @@ def find_recipe():
     # If the "Clear Input" button is clicked, clear the input text
     if clear_button:
         st.session_state['text'] = ''
-        st.experimental_rerun()
+        st.rerun()
 
     st.session_state['input_text'] = text
 
@@ -46,7 +46,11 @@ def find_recipe():
     if response.status_code == 200:
         # Display the response (assuming JSON format)
         data = response.json()
-        listofdata = data["listofdata"]
+        listofdata = data.get("listofdata", None)
+        print(f"list of data {listofdata}")
+        if listofdata == None:
+            st.write("Nothing to show here") 
+            return 
 
         if st.button("Submit"):
             # Process the input data

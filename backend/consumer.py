@@ -77,7 +77,7 @@ def convertToRecipeFormat(context):
     {context}
     """
     stream = openai_client.chat.completions.create(
-        model="gpt-4o-mini-16k",
+        model="gpt-4o-mini",
         messages=[
             {"role": "user", "content": prompt}
         ],
